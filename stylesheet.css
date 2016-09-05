@@ -1,0 +1,23 @@
+canvas {
+	padding: 0;
+    margin: auto;
+    display: block;
+    background-color: AntiqueWhite;
+}
+
+#title {
+	text-align: center;
+	margin: 0;
+}
+
+#score {
+	text-align: center;
+	margin-bottom: 0;
+	margin-top: 0.25em;
+}
+
+#effects {
+	text-align: center;
+	margin-top: 0.5em;
+}
+
