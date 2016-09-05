@@ -25,7 +25,7 @@
 			middle = Math.floor(grid/2), // === 27
 			requestID = false,
 			score = 0,
-			magicFoodProbability = 0.3;
+			magicFoodProbability = 0.4;
 
 		// list of relevant key strokes
 		var keyStrokes = [],
@@ -49,7 +49,7 @@
 					direction: "R"};
 
 		// food properties
-		var food = {xL: 0, 
+		var food = {xL: 0,
 					yL: 0,
 					size: 1,
 					magic: false,
@@ -68,7 +68,7 @@
 					requestID = !requestID;
 					enterPressed = !enterPressed;
 				}
-			
+
 			} else { // game has already started
 				if (e.keyCode === 67) { // "C"
 					snake.colors = changeColor();
@@ -133,7 +133,7 @@
 		function moveSnake (addTo, speedAdd) {
 			// add head to body
 			snake["bodyXY"].unshift([snake.headX, snake.headY, snake.direction]);
-			
+
 			// remove tail
 			snake["bodyXY"].pop();
 			snake[addTo] += speedAdd;
@@ -142,20 +142,20 @@
 		// function to grow snake
 		function growSnake (growFrom, blocks, sign, growDir) {
 			for (var i = 1; i <= blocks; i++) {
-				
+
 				// growing body from the head
 				if (growFrom === "head") {
 					snake.bodyXY.push([middle +(i*sign*growDir[0]), middle +(i*sign*growDir[1]), snake.direction])
 				} else if (growFrom === "tail") { // growing body from tail
 					if (snake.len === snake.bodyXY.length) {
-				
+
 						// adding to blocks snake body
-						snake.bodyXY.push([(snake.bodyXY[snake.len -1][0] +(sign*growDir[0])), 
-										   (snake.bodyXY[snake.len -1][1] +(sign*growDir[1])), 
+						snake.bodyXY.push([(snake.bodyXY[snake.len -1][0] +(sign*growDir[0])),
+										   (snake.bodyXY[snake.len -1][1] +(sign*growDir[1])),
 										    snake.bodyXY[snake.len -1][2]]); // tail direction
-				
+
 						// console.log(i, sign, growDir)
-				
+
 						snake.len++;
 					} else { // if the snake's length is not equal to the number of body parts then something must have gone wrong...
 						requestID = !requestID
@@ -179,7 +179,7 @@
 			while (newColor === "White") {
 				newColor = colorsList[Math.floor(Math.random()*(colorsList.length))]
 			}
-			
+
 			return newColor;
 		};
 
@@ -209,7 +209,7 @@
 		// function to implement spell's effects
 		function castSpell (typeOfMAGIC) {
 			if (typeOfMAGIC === "sugarHigh") {
-	
+
 				// double speed for a while
 				tmpfps = fps*1.5;
 				interval = 1000/tmpfps;
@@ -218,9 +218,9 @@
 				snakeDirectionEvent(snake.bodyXY[snake.len -1][2], "growN", growSnake);
 
 				// update status text
-				document.getElementById("effects").innerHTML = "Aspect of the Cheetah"; //: Your movement speed has been increased by 100%.";
+				document.getElementById("effects").innerHTML = "Aspect of the Cheetah: \nYour movement speed has been increased by 100%."; //: Your movement speed has been increased by 100%.";
 			} else if (typeOfMAGIC === "sugarCrash") {
-	
+
 				// half speed for a while
 				tmpfps = fps/2;
 				interval = 1000/tmpfps;
@@ -229,27 +229,27 @@
 				snakeDirectionEvent(snake.bodyXY[snake.len -1][2], "growN", growSnake);
 
 				// update status text
-				document.getElementById("effects").innerHTML = "Aspect of the Turtle"; //: Your movement speed has been reduced by 50%.";
+				document.getElementById("effects").innerHTML = "Aspect of the Turtle: \nYour movement speed has been reduced by 50%."; //: Your movement speed has been reduced by 50%.";
 			} else if (typeOfMAGIC === "shrink") {
-	
+
 				// shrink 2 blocks
 				shrink(-3);
 
 				// update status text
-				document.getElementById("effects").innerHTML = "Aspect of the Mouse"; //: You've shrunk!";
+				document.getElementById("effects").innerHTML = "Aspect of the Mouse: \nYou've shrunk!"; //: You've shrunk!";
 			} else if (typeOfMAGIC === "growExtra") {
-			
+
 				// grow extra 3 blocks
 				snakeDirectionEvent(snake.bodyXY[snake.len -1][2], typeOfMAGIC, growSnake);
 
 				// update status text
-				document.getElementById("effects").innerHTML = "Aspect of the Elephant"; //: It seems like you may have put on weight...";
+				document.getElementById("effects").innerHTML = "Aspect of the Elephant: \nIt seems like you may have put on weight..."; //: It seems like you may have put on weight...";
 			} else if (typeOfMAGIC === "changeColor") {
-			
+
 				snake.colors = changeColor();
 
 				// update status text
-				document.getElementById("effects").innerHTML = "Aspect of the Chameleon"; //: You've changed color! Press C if you do not like your new look.";
+				document.getElementById("effects").innerHTML = "Aspect of the Chameleon: \nYou've changed color! Press C if you do not like your new look."; //: You've changed color! Press C if you do not like your new look.";
 			}
 		}
 
@@ -267,38 +267,38 @@
 			}
 
 			// collide with food
-			if ((snake.headX >= food.xL && snake.headX <= food.xL +(food.size -1)) && 
+			if ((snake.headX >= food.xL && snake.headX <= food.xL +(food.size -1)) &&
 				(snake.headY >= food.yL && snake.headY <= food.yL +(food.size -1))) {
-				
+
 				// change speed back when eat
 				tmpfps = fps;
 				interval = 1000/tmpfps;
-				
+
 				// update status
 				document.getElementById("effects").innerHTML = "";
 
 				// if collide with magic food
 				if (food.magic) {
-			
+
 					// choose type of effects
 					typeOfMagic = food.magicSpells[Math.floor(Math.random()*(food.magicSpells.length))];
 
 					// magic food effects
 					castSpell(typeOfMagic);
-					
+
 					// update food status
 					food.magic = false;
 
 					// add to score
 					score += 500;
 				} else { // collide with normal food
-			
+
 					// grow snake
 					snakeDirectionEvent(snake.bodyXY[snake.len -1][2], "growN", growSnake);
-					
+
 					// add to score
 					score += 100;
-				}	
+				}
 
 				// food is now absent
 				food.present = false;
@@ -316,7 +316,7 @@
 
 					// remove key down listener
 					document.removeEventListener("keydown", changeDirection);
-					
+
 					// add new event listener
 					document.addEventListener("keydown", function (e) {
 						if (e.keyCode === 13) { // only button that can be pressed now is enter to restart
@@ -325,17 +325,17 @@
 					});
 
 					// Game over text
-					ctx.font = "normal bold 40px sans-serif"; 
+					ctx.font = "normal bold 40px sans-serif";
 					ctx.fillStyle = "red";
-					ctx.textAlign = "center"; 
-					ctx.textBaseline = "middle"; 
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
 					ctx.fillText("GAME OVER", width/2, height/2);
 
 					// reload text
-					ctx.font = "normal 20px sans-serif"; 
+					ctx.font = "normal 20px sans-serif";
 					ctx.fillStyle = "red";
-					ctx.textAlign = "center"; 
-					ctx.textBaseline = "middle"; 
+					ctx.textAlign = "center";
+					ctx.textBaseline = "middle";
 					ctx.fillText("Press 'enter' to play again.", width/2, height/2 + 60);
 				}
 			});
@@ -352,7 +352,7 @@
 
 				// food CANNOT appear ON snake
 				var onSnake = true;
-			
+
 				while (onSnake) {
 					// co ordinates of food
 					food.xL = Math.floor(Math.random()*(grid-(food.size-1)));
@@ -379,7 +379,7 @@
 			// draw food
 			ctx.beginPath();
 			ctx.rect(food.xL*nx, food.yL*ny, nx*food.size, ny*food.size);
-			
+
 			// change color repeatedly if food is magic
 			if (food.magic) {
 				ctx.fillStyle = colorsList[Math.floor(Math.random()*(colorsList.length))];
@@ -412,22 +412,22 @@
 		       		draw();
 		       	}
 		    }
-		    
+
 		    requestAnimationFrame(start);
 		}
 
 		// adding parts to the snake's body
 		growSnake("head", snake.len, -1, [1,0]);
-		
+
 		// start image
 		drawFood(food.present);
 		drawSnake();
-		
+
 		// start game text
-		ctx.font = "normal 20px sans-serif"; 
+		ctx.font = "normal 20px sans-serif";
 		ctx.fillStyle = "red";
-		ctx.textAlign = "center"; 
-		ctx.textBaseline = "middle"; 
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
 		ctx.fillText("Press 'enter' to start playing.", width/2, height/2 -30);
 
 		start();
