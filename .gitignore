@@ -1,3 +1,4 @@
 food/
 *.zip
 testing*
+node_modules/
